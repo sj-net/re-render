@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "sourceMap": true, // Ensure source maps are generated
+        "skipLibCheck": true,
+        "target": "ES2017",
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "strict": true,
+        "esModuleInterop": true,
+        "outDir": "./dist"
+    },
+    "include": ["src", "tests"],
+    "exclude": ["node_modules", "dist"]
+}
