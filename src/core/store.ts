@@ -1,4 +1,4 @@
-import { isAsyncFunction } from '../helper';
+import { isAsyncFunction, safeGet } from '../helper';
 import { diff } from 'deep-diff';
 import { configureDevTools } from './devTools';
 import {
@@ -27,7 +27,6 @@ let globalConfig: IStoreConfig<any> = {
     },
     globalErrorHandler: (error, name, lastGoodState) => {
         globalConfig.logging.logger.error(` [${name}]: ${error.message}`);
-        globalConfig.logging.logger.debug(lastGoodState);
     },
     afterMiddlewares: [],
     beforeMiddlewares: [],
@@ -123,7 +122,7 @@ export function createStore<
             let stateDiff = diff(prevState, nextState);
             if (!stateDiff) {
                 // No changes in state, so return early.
-                globalConfig.logging.logger.info(
+                globalConfig.logging.logger.log(
                     `[${storeName}] No changes in state for action "${actionName}".`
                 );
                 return;
@@ -330,9 +329,3 @@ function createHooks<TState>(getState: () => TState): StoreHooks<TState> {
     return createProxy();
 }
 
-function safeGet<T>(obj: any, path: string[]): T | null {
-    return path.reduce(
-        (acc, key) => (acc && acc[key] !== undefined ? acc[key] : null),
-        obj
-    );
-}

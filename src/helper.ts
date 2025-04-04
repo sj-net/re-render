@@ -97,3 +97,10 @@ export class ValidationError extends Error {
 
 export const isAsyncFunction = (fn: Function) =>
     Object.prototype.toString.call(fn) === '[object AsyncFunction]';
+
+export function safeGet<T>(obj: any, path: string[]): T | null {
+    return path.reduce(
+        (acc, key) => (acc && acc[key] !== undefined ? acc[key] : null),
+        obj
+    );
+}
