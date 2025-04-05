@@ -7,11 +7,9 @@
         "moduleResolution": "Node",
         "strict": true,
         "esModuleInterop": true,
-        "outDir": "./dist",
         "jsx": "react-jsx",
         "lib": ["dom", "esnext"],
-        "types": ["vite/client"],  
+        // "types": ["vite/client"],  
     },
-    "include": ["src", "tests"],
     "exclude": ["node_modules", "dist"]
 }

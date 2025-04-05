@@ -1,0 +1,72 @@
+{
+    "name": "re-render-react",
+    "version": "1.0.4",
+    "description": "A lightweight, performant state management library for JavaScript.",
+    "license": "MIT",
+    "main": "dist/index.cjs",
+    "module": "dist/index.mjs",
+    "browser": "dist/index.iife.js",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/sj-net/re-render"
+    },
+    "homepage": "https://github.com/sj-net/re-render#readme",
+    "scripts": {
+        "build": "tsup",
+        "test": "yarn vitest --coverage --run --reporter=verbose",
+        "version-up": "node version-update.cjs",
+        "prerelease": "node ../scripts/copy-readme.js",
+        "release": "yarn build && npm publish --access public ",
+        "postrelease": "node ../scripts/delete-readme.js"
+    },
+    "keywords": [
+        "state management",
+        "typescript",
+        "react",
+        "middleware"
+    ],
+    "author": "Santosh Jallapuram",
+    "devDependencies": {
+        "@testing-library/dom": "^10.4.0",
+        "@testing-library/jest-dom": "^6.6.3",
+        "@testing-library/react": "^16.3.0",
+        "@testing-library/react-hooks": "^8.0.1",
+        "@types/deep-diff": "^1.0.5",
+        "@types/deepmerge": "^2.2.3",
+        "@types/lodash.clonedeep": "^4.5.9",
+        "@types/lodash.merge": "^4.6.9",
+        "@types/react": "^19.1.0",
+        "@vitest/coverage-istanbul": "3.1.1",
+        "coverage-istanbul": "^1.1.2",
+        "immer": "^10.1.1",
+        "jsdom": "^26.0.0",
+        "react": "^19.1.0",
+        "react-dom": "^19.1.0",
+        "rm": "^0.1.8",
+        "tsup": "^8.4.0",
+        "typescript": "^5.8.2",
+        "vite": "^6.2.5",
+        "vitest": "^3.1.1"
+    },
+    "dependencies": {
+        "deep-diff": "^1.0.2",
+        "lodash.clonedeep": "^4.5.0",
+        "lodash.merge": "^4.6.2",
+        "re-render-core": "^1.0.7"
+    },
+    "peerDependencies": {
+        "react": "^18 || ^19",
+        "react-dom": "^18 || ^19"
+    },
+    "publishConfig": {
+        "access": "public"
+    },
+    "sideEffects": false,
+    "engines": {
+        "node": ">=18.0.0"
+    }
+}

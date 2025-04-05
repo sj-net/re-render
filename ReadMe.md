@@ -1,13 +1,6 @@
-# Note:
+# re-render: Lightweight State Management
 
-1. I have developed this as I wanted this in one of my project.
-2. I do not have any plans or time to push this to package manager as of now.
-3. Feel free to fork and use it or even clone and use it like an internal code in your project.
-4. If you want to contribute please send a PR.
-
-# ReRender - Lightweight State Management
-
-ReRender is a **high-performance, minimal, and flexible state management** library designed for JavaScript and TypeScript. It focuses on **performance, simplicity, and flexibility**, making it suitable for any project.
+re-render is a **high-performance, minimal, and flexible state management** library designed for JavaScript and TypeScript. It focuses on **performance, simplicity, and flexibility**, making it suitable for any project.
 
 Why another state management library ?
 
@@ -20,7 +13,18 @@ Why another state management library ?
 7. Generated custom hooks to access all props of a state using Proxy. To avoid subscribing whole state object and avoid unnecessary component proccessing and rerender.
 8. A pure vanilla implementation and a simple react wrapper on top of it which works for both react and non react projects.
 
+## Available Packages
+
+1. re-render-core - A pure typescript based store management library.
+2. re-render-react - A react hook based libary on top of re-render-core. This provides a new method named `createReactStore`.
+
 ## Usage
+
+```
+npm i re-renoder-core // for vanilla
+npm i re-render-react // for react
+
+```
 
 ### Basic Store
 
@@ -233,7 +237,7 @@ const persistedStore = createStore({
 
 ### DevTools Integration (WIP)
 
-ReRender automatically adds all store objects to `window.__rerender_devtools__`, allowing dev tools in a separate UI.
+re-render automatically adds all store objects to `window.__rerender_devtools__`, allowing dev tools in a separate UI.
 
 Dev tools window is yet to be developed.
 
