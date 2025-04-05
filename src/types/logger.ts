@@ -14,7 +14,7 @@ export interface ILoggerOptions {
     /**
      * The logging mechanism, typically `console`, but can be replaced with a custom logger.
      */
-    logger: Pick<Console, 'log' | 'warn' | 'error'>;
+    logger: Console;
 
     /**
      * Whether to include timestamps in log messages.

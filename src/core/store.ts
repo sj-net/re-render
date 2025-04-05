@@ -16,7 +16,6 @@ import {
 } from '../types/store';
 import merge from 'lodash.merge';
 import cloneDeep from 'lodash.clonedeep';
-import { initialState } from '../../tests/setup';
 
 let globalConfig: IStoreConfig<any> = {
     logging: {
@@ -55,7 +54,7 @@ export function createStore<
     const { storeName, actions, selectors } = metadata;
     const mergedConfig = { ...globalConfig, ...metadata.storeConfig };
     const validations = metadata.validations || {};
-    let state = cloneDeep(initialState) as TState; // use initial state from tests.
+    let state = cloneDeep(metadata.initialState) as TState; // use initial state from tests.
 
     const setState = (
         updater: ((draft: TState) => void) | Partial<TState>,

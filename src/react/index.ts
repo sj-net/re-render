@@ -2,7 +2,25 @@ import { createStore as coreCreateStore } from '../core/store';
 import { safeGet } from '../helper';
 import { IAction, ISelector, StoreHooks } from '../types/common';
 import { IStoreMetadata, IStore } from '../types/store';
-import { useSyncExternalStore } from 'react';
+import { useEffect, useState } from 'react';
+
+function useReRenderStore<T>(
+    subscribe: (onChange: () => void) => () => void,
+    getSnapshot: () => T
+): T {
+    const [state, setState] = useState(getSnapshot);
+
+    useEffect(() => {
+        const unsubscribe = subscribe(() => {
+            const newValue = getSnapshot();
+            setState(newValue);
+        });
+
+        return unsubscribe;
+    }, [subscribe, getSnapshot]);
+
+    return state;
+}
 
 export function createStore<
     TState,
@@ -64,15 +82,15 @@ class HookBuilder<TState> {
                         const hookPath = [...path, stateKey];
 
                         const hook = () =>
-                            useSyncExternalStore(
-                                this.subscribe,
-                                () => safeGet(this.getState(), hookPath),
-                                () => safeGet(this.getState(), hookPath)
+                            useReRenderStore(this.subscribe, () =>
+                                safeGet(this.getState(), hookPath)
                             );
 
-                        hook.displayName = `use${hookPath
-                            .map((p) => p[0].toUpperCase() + p.slice(1))
-                            .join('')}`;
+                        Object.defineProperty(hook, 'name', {
+                            value: `use${hookPath
+                                .map((p) => p[0].toUpperCase() + p.slice(1))
+                                .join('')}`,
+                        });
 
                         return hook;
                     }
@@ -91,7 +109,6 @@ class HookBuilder<TState> {
             }
         );
 
-        if (import.meta.env?.MODE === 'development') Object.freeze(proxy);
         this.proxyCache.set(cacheKey, proxy);
         return proxy;
     }
