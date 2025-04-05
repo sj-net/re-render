@@ -1,3 +1,10 @@
+# Note:
+
+1. I have developed this as I wanted this in one of my project.
+2. I do not have any plans or time to push this to package manaeger as of now.
+3. Feel free to fork and use it just a internal code in your project.
+4. If you want to contribute please send a PR.
+
 # ReRender - Lightweight State Management
 
 ReRender is a **high-performance, minimal, and flexible state management** library designed for JavaScript and TypeScript. It focuses on **performance, simplicity, and flexibility**, making it suitable for any project.
@@ -6,33 +13,14 @@ Inspired by [Zustand](https://github.com/pmndrs/zustand).
 
 Why another state management library ?
 
-1. Multiple stores under same app.
-2. Simplified middleware system.
-3. In built - Logger, Validation, Persistance and DevTools
-4. Pure TypeScript.
-5. Redux inspired actions and selectors.
-6. No Reducers and dispatch.
-7. No proper dev tools extension for zustand. In built dev tool will help
-
-Basically I wanted a mix of Redux & Zustand concepts.
-
-## Features
-
--   **Lightweight**: Minimal footprint with only dependency of deep-diff
--   **High Performance**: Optimized updates, avoiding unnecessary re-renders.
--   **Middleware Support**: Global and per-store middlewares for logging, side effects, etc.
--   **Validation**: Built-in validation before state updates.
--   **State Persistence**: Store state in localStorage/sessionStorage.
--   **Vanilla JS & TypeScript**: Works with both.
--   **DevTools Support**: Exposes internal state for debugging.
-
-## Installation (Not yet pushed to npm/yarn)
-
-```sh
-yarn add re-render
-# or
-npm install re-render
-```
+1. I need multiple stores under same app like zustand.
+2. Need actions and selectors like redux but not reducers.
+3. Simple middlewares and transformers. Zustand middlewares are too complicated when used in typescript.
+4. A good dev tools. Redux has one but redux itself is too complicated. And zustand doesn't have a solid one.
+5. In built middlewares for logging, validations and persistance.
+6. In built transformer for immer.
+7. Generated custom hooks to access all props of a state using Proxy. To avoid subscribing whole state object and avoid unnecessary component proccessing and rerender.
+8. A pure vanilla implementation and a simple react wrapper on top of it which works for both react and non react projects.
 
 ## Usage
 
@@ -126,6 +114,20 @@ console.log(counterStore.selectors.getCount()); // access current count using se
 console.log(counterStore.selectors.isEven()); // check if count is even using selector
 console.log(counterStore.selectors.isOdd()); // check if count is odd using selector
 console.log(counterStore.selectors.isDivisibleBy(7)); // check if count is divisble by give number 7 using selector
+
+// hooks usage in both react and vanilla projects.
+// For object like this
+{
+    count: 0,
+    names: [],
+    profile: {
+        age: 0,
+        name: '',
+    },
+};
+// usage is
+let age = store.hooks.profile.useAge(); // this works in both react and non react becuase the core app also creates simple hooks object on store api to be compatible with react hooks concept. Check the tests/react/index.text.tsx for react hooks examples.
+
 ```
 
 ### Middleware (Synchronous Only)
@@ -138,9 +140,7 @@ const store = createStore({
         login: (user) => set({ user }),
         logout: () => set({ user: null }),
     }),
-    middlewares: [
-        loggerMiddleware,
-    ],
+    middlewares: [loggerMiddleware],
 });
 ```
 
