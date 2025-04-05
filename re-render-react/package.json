@@ -1,6 +1,6 @@
 {
     "name": "re-render-react",
-    "version": "1.0.4",
+    "version": "1.0.5",
     "description": "A lightweight, performant state management library for JavaScript.",
     "license": "MIT",
     "main": "dist/index.cjs",
@@ -56,7 +56,7 @@
         "deep-diff": "^1.0.2",
         "lodash.clonedeep": "^4.5.0",
         "lodash.merge": "^4.6.2",
-        "re-render-core": "^1.0.7"
+        "re-render-core": "^1.0.8"
     },
     "peerDependencies": {
         "react": "^18 || ^19",

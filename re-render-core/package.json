@@ -1,6 +1,6 @@
 {
     "name": "re-render-core",
-    "version": "1.0.7",
+    "version": "1.0.8",
     "description": "A lightweight, performant state management library for JavaScript.",
     "license": "MIT",
     "main": "dist/index.cjs",

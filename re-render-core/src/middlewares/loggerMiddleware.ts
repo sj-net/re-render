@@ -14,7 +14,6 @@ export const loggerMiddleware: Middleware<any> = {
         diff: Diff<any, any>[] | undefined,
         ...args: any[]
     ) => {
-        if (!config.logDiff) return;
-        logDiff(storeName, actionName, config, diff);
+        if (config.logDiff) logDiff(storeName, actionName, config, diff);
     },
 };

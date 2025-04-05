@@ -11,16 +11,9 @@ export const immerTransformer: StateTransformer<any> = {
         updater,
         ..._args: any[]
     ) => {
-        if (config.useImmer.produce) {
-            const { produce } = config.useImmer;
-            return produce(nextState, (draft) => {
-                // Apply the changes to the draft state
-                updater(draft);
-            });
-        } else {
-            throw new Error(
-                'immerTransformer: produce function is not defined in config.'
-            );
+        if (!config.useImmer.produce) {
+            throw new Error('Immer produce function not defined.');
         }
+        return config.useImmer.produce(nextState, (draft) => updater(draft));
     },
 };

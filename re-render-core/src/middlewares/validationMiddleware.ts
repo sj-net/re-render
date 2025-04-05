@@ -15,10 +15,6 @@ export const validationMiddleware: Middleware<any> = {
         validations: any,
         ..._args: any[]
     ) => {
-        if (validations) {
-            if (Object.keys(validations).includes(actionName)) {
-                validations[actionName](prevState, nextState);
-            }
-        }
+        validations?.[actionName]?.(prevState, nextState);
     },
 };
