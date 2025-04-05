@@ -1,15 +1,13 @@
 # Note:
 
 1. I have developed this as I wanted this in one of my project.
-2. I do not have any plans or time to push this to package manaeger as of now.
-3. Feel free to fork and use it just a internal code in your project.
+2. I do not have any plans or time to push this to package manager as of now.
+3. Feel free to fork and use it or even clone and use it like an internal code in your project.
 4. If you want to contribute please send a PR.
 
 # ReRender - Lightweight State Management
 
 ReRender is a **high-performance, minimal, and flexible state management** library designed for JavaScript and TypeScript. It focuses on **performance, simplicity, and flexibility**, making it suitable for any project.
-
-Inspired by [Zustand](https://github.com/pmndrs/zustand).
 
 Why another state management library ?
 
@@ -44,46 +42,63 @@ interface ICounterSelectors extends ISelector {
     isDivisibleBy: (divisor: number) => boolean;
 }
 
-const counterStore = createStore<
-    ICounterState,
-    ICounterActions,
-    ICounterSelectors
->(
-    'counter',
-    {
-        count: 0,
-        foo: 's',
-    },
-    {
+const counterStore = createStore<ICounterState, ICounterActions, ICounterSelectors>({
+    storeName: 'counter',
+    initialState,
+    actions: {
         increment: (state: ICounterState) => {
             state.count++;
         },
         decrement: (state: ICounterState) => {
             state.count--;
         },
+        add: (state: ICounterState, by: number) => {
+            state.count = state.count + by;
+        },
+        resetAsync: async (state: ICounterState) => {
+            state.count = 0;
+        },
     },
-    {
+    selectors: {
         isEven: (state: ICounterState) => state.count % 2 === 0,
         isOdd: (state: ICounterState) => state.count % 2 !== 0,
         getCount: (state: ICounterState) => state.count,
         isDivisibleBy: (state: ICounterState, divisor: number) =>
             state.count % divisor === 0,
+        getNames: (state: ICounterState) => state.names,
     },
-    {},
-    {
-        increment: (prevState, nextState) => {
-            if (nextState.count >= 10) {
-                throwValidationError('Count cannot become greater than 10!');
+    validations: {
+        increment: (_prevState, nextState) => {
+            if (nextState.count >= validationErrorMaxValue) {
+                throwValidationError(
+                    `Count cannot become greater than ${validationErrorMaxValue}.`
+                );
             }
         },
 
-        decrement: (prevState, nextState) => {
+        decrement: (_prevState, nextState) => {
             if (nextState.count < 0) {
                 throwValidationError('Count cannot become negative!');
             }
         },
-    }
-);
+        _: (_prevState, nextState) => {
+            // global validation for all actions in this store.
+            if (nextState.count < 0) {
+                throwValidationError('Count cannot become negative!');
+            }
+        },
+    },
+    storeConfig: {
+        beforeMiddlewares: [validationMiddleware],
+        afterMiddlewares: [loggerMiddleware],
+        rollbackOnError: true,
+        logDiff: true,
+        useImmer: {
+            produce: produce,
+        },
+        transformers: [immerTransformer],
+    },
+});
 
 // usage
 
@@ -130,18 +145,77 @@ let age = store.hooks.profile.useAge(); // this works in both react and non reac
 
 ```
 
+### Transformers
+
+A transformer is something that changes the state before setting it. Currently only immerTransformer is available.
+
+```ts
+export const immerTransformer: StateTransformer<any> = {
+    name: 'immerTransformer',
+    fn: (
+        _storeName,
+        _actionName,
+        _prevState,
+        nextState,
+        config,
+        updater,
+        ..._args: any[]
+    ) => {
+        if (config.useImmer.produce) {
+            const { produce } = config.useImmer;
+            return produce(nextState, (draft) => {
+                // Apply the changes to the draft state
+                updater(draft);
+            });
+        } else {
+            throw new Error(
+                'immerTransformer: produce function is not defined in config.'
+            );
+        }
+    },
+};
+```
+
 ### Middleware (Synchronous Only)
 
 ```ts
-const store = createStore({
-    name: 'auth',
-    initialState: { user: null },
-    actions: (set) => ({
-        login: (user) => set({ user }),
-        logout: () => set({ user: null }),
-    }),
-    middlewares: [loggerMiddleware],
-});
+export const loggerMiddleware: Middleware<any> = {
+    name: 'logger',
+    type: 'after',
+    fn: (
+        storeName: string,
+        actionName: string,
+        _prevState,
+        _nextState,
+        config,
+        diff: Diff<any, any>[] | undefined,
+        ...args: any[]
+    ) => {
+        if (!config.logDiff) return;
+        logDiff(storeName, actionName, config, diff);
+    },
+};
+
+export const validationMiddleware: Middleware<any> = {
+    name: 'validation',
+    type: 'before',
+    fn: (
+        _storeName: string,
+        actionName: string,
+        prevState,
+        nextState,
+        _config,
+        _diff: any,
+        validations: any,
+        ..._args: any[]
+    ) => {
+        if (validations) {
+            if (Object.keys(validations).includes(actionName)) {
+                validations[actionName](prevState, nextState);
+            }
+        }
+    },
+};
 ```
 
 ### State Persistence (Not fully tested)
@@ -159,8 +233,14 @@ const persistedStore = createStore({
 
 ### DevTools Integration (WIP)
 
-ReRender automatically registers stores to `window.__rerender_devtools__`, allowing debugging in a separate UI.
+ReRender automatically adds all store objects to `window.__rerender_devtools__`, allowing dev tools in a separate UI.
+
+Dev tools window is yet to be developed.
 
 ## License
 
 MIT
+
+## Credits:
+
+If this library helped you please give the credits linking to this repo.
