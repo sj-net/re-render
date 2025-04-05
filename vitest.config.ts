@@ -25,7 +25,7 @@ export default defineConfig({
             skipFull: false, // Don't skip fully covered files
             extension: ['.ts'], // Include TypeScript files
             enabled: true, // Enable coverage
-            reportsDirectory: 'test-results/coverage',
+            reportsDirectory: 'reports/coverage',
         },
     },
 });
